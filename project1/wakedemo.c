@@ -20,21 +20,9 @@
 #define SW4 8 //up
 #define SWITCHES 15
 
-#define MAX_LENGTH 100
-//snake body
-short snakeX[MAX_LENGTH];
-short snakeY[MAX_LENGTH];
-short snakeLength = 5;
-
-//food
-short foodX[2] = {20,50};
-short foodY[2] = {30, 50};
-char foodExists[2] = {1,0};
-
-
 // Snake setup
-short drawPos[2] = {20, 20}; //starting position
-short controlPos[2] = {20,20}; //new position
+short drawPos[2] = {0, 0}; //starting position
+short controlPos[2] = {0,0}; //new position
 
 short colVelocity = 0; //initial movement speed
 short rowVelocity = 0; //moving sideways
@@ -51,9 +39,15 @@ void draw_ball(int col, int row, unsigned short color){
 
 
 void screen_update_ball(){
-  draw_ball(snakeX[snakeLength-1], snakeY[snakeLength-1], COLOR_BLACK);
-
-  draw_ball(snakeX[0], snakeY[1], COLOR_WHITE); //DRAW NEW BALL
+  for(char axis = 0; axis < 2; axis++){
+    if(drawPos[axis] != controlPos[axis]) goto redraw;
+    }
+  return;
+ redraw:
+  draw_ball(drawPos[0], drawPos[1], COLOR_BLUE); //ERASE BALL
+  for(char axis =0; axis < 2; axis++)
+    drawPos[axis] = controlPos[axis];
+  draw_ball(drawPos[0], drawPos[1], COLOR_WHITE); //DRAW NEW BALL
 }
 
 
@@ -80,7 +74,6 @@ void switch_interrupt_handler(){
 
 void update_shape(){
   screen_update_ball();
-  draw_food();
 }
 
 //control mechanics
@@ -122,36 +115,6 @@ void wdt_c_handler(){
   if(controlPos[1] > screenHeight-2) controlPos[1] = screenHeight-2;
 
   redrawScreen =1;
-
-  for(int i=snakeLength -1; i >0; i--){
-    snakeX[i] = snakeX[i-1];
-    snakeY[i] = snakeY[i-1];
-      }
-  snakeX[0] = controlPos[0];
-  snakeY[0] = controlPos[1];
-
-  for(int i = 0; i<2; i++){
-    if(foodExists[i] && controlPos[0] == foodX[i] && controlPos[1] == foodY[i]){
-      snakeLength++;
-      foodExists[i] = 0;
-    }
-  }
-  for(int i = 0; i < (snakeLength >= 10 ? 2: 1); i++){
-  if(!foodExists){
-    foodX[i] = (foodX[i] + 17) % (screenWidth -5) + 2; //randomizer
-    foodY[i] = (foodY[i] + 23) % (screenHeight -5) + 2;
-    foodExists[i] =1;
-  }
- }
-
-}
-//draw the food
-void draw_food(){
-  for(int i=0; i<2;i++){
-    if(foodExists[i]){
-      fillRectangle(foodX-1, foodY-1,3,3, COLOR_RED);
-    }
-  }
 }
 
 void main(){
