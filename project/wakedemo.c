@@ -1,18 +1,12 @@
 #include <msp430.h>
-
 #include <libTimer.h>
-
 #include "lcdutils.h"
-
 #include "lcddraw.h"
-
 
 
 // WARNING: LCD DISPLAY USES P1.0.  Do not touch!!!
 
-
 #define LED BIT6       /* note that bit zero required for display */
-
 
 #define SW1 1 //left
 #define SW2 2 //down
@@ -52,8 +46,7 @@ void draw_ball(int col, int row, unsigned short color){
 
 void screen_update_ball(){
   draw_ball(snakeX[snakeLength-1], snakeY[snakeLength-1], COLOR_BLACK);
-
-  draw_ball(snakeX[0], snakeY[1], COLOR_WHITE); //DRAW NEW BALL
+  draw_ball(snakeX[0], snakeY[0], COLOR_WHITE); //DRAW NEW BALL
 }
 
 
@@ -77,6 +70,17 @@ void switch_interrupt_handler(){
   char p2val = switch_update_interrupt_sense();
   switches = ~p2val & SWITCHES;
 }
+
+
+//draw the food
+void draw_food(){
+  for(int i=0; i<2;i++){
+    if(foodExists[i]){
+      fillRectangle(foodX[i]-1, foodY[i]-1,3,3, COLOR_RED);
+    }
+  }
+}
+
 
 void update_shape(){
   screen_update_ball();
@@ -137,21 +141,13 @@ void wdt_c_handler(){
     }
   }
   for(int i = 0; i < (snakeLength >= 10 ? 2: 1); i++){
-  if(!foodExists){
+  if(!foodExists[i] && controlPos[0] == foodX[i] && controlPos[1] == foodY[i]){
     foodX[i] = (foodX[i] + 17) % (screenWidth -5) + 2; //randomizer
     foodY[i] = (foodY[i] + 23) % (screenHeight -5) + 2;
-    foodExists[i] =1;
+    foodExists[i] =0;
   }
  }
 
-}
-//draw the food
-void draw_food(){
-  for(int i=0; i<2;i++){
-    if(foodExists[i]){
-      fillRectangle(foodX-1, foodY-1,3,3, COLOR_RED);
-    }
-  }
 }
 
 void main(){
