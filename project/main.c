@@ -3,7 +3,9 @@
 #include "led.h"
 #include "snake.h"
 #include "game.h"
-
+#include "../h/lcdutils.h"
+#include "../h/lcddraw.h"
+#include "../timerLib/libTimer.h"
 
 // WARNING: LCD DISPLAY USES P1.0.  Do not touch!!!
 
@@ -54,7 +56,6 @@ void switch_interrupt_handler(){
 //control mechanics
 void wdt_c_handler(){
   static int moveCounter =0;
-  static unsigned int randomSeed =0;
 
   
   moveCounter++;
@@ -67,7 +68,7 @@ void wdt_c_handler(){
     if(switches & SW2){
       snake_init();
       game_init();
-      led_off();
+      led_init();
       buzzer_set_period(0);
     }
     return;
@@ -91,7 +92,7 @@ void wdt_c_handler(){
   }
 }
 
-void main(){
+int main(){
   
   configureClocks();
   lcd_init();
@@ -101,7 +102,7 @@ void main(){
   snake_init();
   game_init();
 
- enableWDTInterrupts();
+  enableWDTInterrupts();
  or_sr(0x8);
 
  clearScreen(COLOR_BLACK);
@@ -114,6 +115,7 @@ void main(){
   or_sr(0x10);
   P1OUT |= BIT6;
  }
+ return 0;
 }
 
 void __interrupt_vec(PORT2_VECTOR) Port_2(){

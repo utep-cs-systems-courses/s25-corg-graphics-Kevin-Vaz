@@ -8,11 +8,16 @@ void snake_init();
 void move_snake();
 
 //check for collition
-void check_self_collition();
+void check_self_collision();
 
 //draw snake
 void draw_snake();
 
 extern char gameover;
+extern short colVelocity, rowVelocity;
+extern short snakeX[100], snakeY[100];
+extern short snakeLength;
+extern short controlPos[2];
+
 
 #endif

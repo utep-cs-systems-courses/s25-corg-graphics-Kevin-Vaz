@@ -13,8 +13,13 @@ short controlPos[2] = {20,20};
 //snake velocity
 short colVelocity = 0, rowVelocity = 0;
 
+extern unsigned int grow_snake(unsigned int);
+
+extern short foodX, foodY;
+extern char foodExists;
+
 //snake values for gameOver
-void snake-init(){
+void snake_init(){
   snakeLength = 5;
   controlPos[0] = 20;
   controlPos[1] = 20;
@@ -48,6 +53,12 @@ void move_snake(){
   if(controlPos[0] > screenWidth -1) controlPos[0] = screenWidth-1;
   if(controlPos[1] < 1) controlPos[1] = 1;
   if(controlPos[1] > screenHeight -1) controlPos[1] = screenHeight -1;
+
+  //check if food was eaten
+  if(controlPos[0] >= foodX-2 && controlPos[0] <= foodX + 2 &&
+     controlPos[1] >= foodY-2 && controlPos[1] <= foodY + 2) {
+    snakeLength = grow_snake(snakeLength);
+    foodExists = 0;
 }
 
 void check_self_collision(){
@@ -57,8 +68,10 @@ void check_self_collision(){
     }
   }
 }
-
+}
 void draw_snake(){
-  draw_ball(snakeX[0], snakeY[0], COLOR_WHITE); //draw head
-  draw_ball(snakeX[snakeLength-1], snakeY[snakeLength-1], COLOR_BLACK);
+  for(int i = 0; i < snakeLength; i++){
+    draw_ball(snakeX[0], snakeY[0], COLOR_WHITE); //draw head
+  }
+    draw_ball(snakeX[snakeLength-1], snakeY[snakeLength-1], COLOR_BLACK);
 }

@@ -1,5 +1,5 @@
-#include <masp430.h>
-#include "timerLib/libTimer.h"
+#include <msp430.h>
+#include "../timerLib/libTimer.h"
 #include "buzzer.h"
 
 void buzzer_init(){
