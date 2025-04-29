@@ -60,10 +60,10 @@ void update_shape(){
 
     
   if(!foodExists){
-      foodX = (foodX + 17) % screenWidth;
-      foodY = (foodY + 11) % screenHeight;
-      if(foodX < 15) foodX += 5;
-      if(foodY < 15) foodY += 5;
+    foodX = (foodX + 17) % (screenWidth -10);
+    foodY = (foodY + 11) % ( screenHeight - 10);
+      if(foodX < 5);
+      if(foodY < 5);
       foodExists =1;
     }
   draw_snake();

@@ -29,6 +29,7 @@ void switch_init();
 void switch_interrupt_handler();
 static char switch_update_interrupt_sense();
 void wdt_c_handler();
+void restart_game();
 
 //control mechanics
 void wdt_c_handler(){
@@ -64,11 +65,9 @@ void wdt_c_handler(){
     rowVelocity = -1;
   }
   
-  /*move head
-  controlPos[0] += colVelocity;
-  controlPos[1] += rowVelocity;
-  */
+
   move_snake();
+
   // Keep snake inside bounds
   if (controlPos[0] < 1) controlPos[0] = 1;
   if (controlPos[0] > screenWidth - 2) controlPos[0] = screenWidth - 2;
@@ -88,6 +87,14 @@ void wdt_c_handler(){
       snakeY[i] = snakeY[i-1];
     }
   }
+
+  P1OUT &= ~(LED_RED | LED_GREEN);
+
+  if(switches & SW1) P1OUT |= LED_RED;
+  if(switches & SW2) P1OUT |= LED_GREEN;
+  if(switches & SW3) P1OUT |= LED_RED;
+  if(switches & SW4) P1OUT |= LED_GREEN;
+
   
   //set redraw flag
   redrawScreen = 1;

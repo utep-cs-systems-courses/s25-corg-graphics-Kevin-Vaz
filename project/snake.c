@@ -67,7 +67,7 @@ void check_self_collision(){
 void draw_snake(){
   //erase old tail
   if(!growing){
-    fillRectangle(oldTrailX, oldTrailY, 10,10, COLOR_BLACK); 
+    fillRectangle(oldTrailX, oldTrailY, 10,5, COLOR_BLACK); 
     //draw new head
   }
     for(int i = 0; i < snakeLength; i++){
