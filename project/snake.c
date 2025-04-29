@@ -71,7 +71,7 @@ void check_self_collision(){
 }
 void draw_snake(){
   for(int i = 0; i < snakeLength; i++){
-    draw_ball(snakeX[0], snakeY[0], COLOR_WHITE); //draw head
+    fillRectangle(snakeX[0], snakeY[0], 5, 5, COLOR_WHITE); //draw head
   }
-    draw_ball(snakeX[snakeLength-1], snakeY[snakeLength-1], COLOR_BLACK);
+  fillRectangle(snakeX[snakeLength-1], snakeY[snakeLength-1],5,5, COLOR_BLACK);
 }
