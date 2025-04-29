@@ -5,7 +5,9 @@
 
 //snake body
 short snakeX[100], snakeY[100];
-short snakeLength = 2;
+short snakeLength = 5;
+short oldTrailX, oldTrailY;
+char growing =0;
 
 //snake head
 short controlPos[2] = {20,20};
@@ -23,12 +25,17 @@ void snake_init(){
   snakeLength = 5;
   controlPos[0] = 20;
   controlPos[1] = 20;
-  colVelocity = 0;
+  colVelocity = 1;
   rowVelocity = 0;
 }
 
 //Update snake body and head
 void move_snake(){
+  if(!growing){
+    oldTrailX = snakeX[snakeLength -1];
+    oldTrailY = snakeY[snakeLength -1];
+  }
+  
   for(int i = snakeLength -1; i> 0; i--){
     snakeX[i] = snakeX[i-1];
     snakeY[i] = snakeY[i-1];
@@ -59,9 +66,12 @@ void check_self_collision(){
 }
 void draw_snake(){
   //erase old tail
-    fillRectangle(snakeX[snakeLength-1], snakeY[snakeLength-1], 5, 5, COLOR_BLACK); 
+  if(!growing){
+    fillRectangle(oldTrailX, oldTrailY, 10,10, COLOR_BLACK); 
     //draw new head
+  }
     for(int i = 0; i < snakeLength; i++){
-      fillRectangle(snakeX[i], snakeY[i],5,5, COLOR_GREEN);
+      fillRectangle(snakeX[0], snakeY[0],5,5, COLOR_GREEN);
     }
+    growing = 0;
 }

@@ -39,6 +39,9 @@ void wdt_c_handler(){
   moveCounter = 0;
   
   if(gameover){
+    if(switches){
+      restart_game();
+    }
     redrawScreen = 1;
     return;
   }

@@ -14,6 +14,7 @@ int redrawScreen =1;
 //game over flag
 char gameover =0;
 
+extern char growing;
 extern unsigned int grow_snake(unsigned int length);
 
 //setup of initial values
@@ -28,8 +29,7 @@ void game_init(){
 void game_over(){
   gameover =1;
   P1OUT |= LED_GREEN;
-  buzzer_set_period(500);
-  clearScreen(COLOR_RED);
+  buzzer_set_period(800);
   redrawScreen =1;
 }
 
@@ -48,15 +48,31 @@ void update_shape(){
   
     move_snake();
     check_self_collision();
-      
+
+    if(foodExists &&
+       controlPos[0] >= foodX -4 && controlPos[0] <= foodX + 4 &&
+       controlPos[1] >= foodY -4 && controlPos[1] <= foodY + 4) {
+      fillRectangle(foodX-2, foodY -2, 5, 5, COLOR_BLACK);
+      snakeLength += 7;
+      growing =1;
+      foodExists =0;
+    }
+
+    
   if(!foodExists){
-      foodX = (foodX + 37) % screenWidth;
-      foodY = (foodY + 61) % screenHeight;
-      if(foodX < 5) foodX += 5;
-      if(foodY < 5) foodY += 5;
+      foodX = (foodX + 17) % screenWidth;
+      foodY = (foodY + 11) % screenHeight;
+      if(foodX < 15) foodX += 5;
+      if(foodY < 15) foodY += 5;
       foodExists =1;
     }
-  clearScreen(COLOR_BLACK);
   draw_snake();
   draw_food();
+}
+
+void restart_game(){
+  game_init();
+  snake_init();
+  buzzer_set_period(0);
+  redrawScreen =1;
 }
