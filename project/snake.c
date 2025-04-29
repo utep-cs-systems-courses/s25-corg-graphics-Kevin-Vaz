@@ -29,12 +29,14 @@ void snake_init(){
 
 //Update snake body and head
 void move_snake(){
-
   for(int i = snakeLength -1; i> 0; i--){
-    snakeX[0] = snakeX[i-1];
-    snakeY[0] = snakeY[i-1];
+    snakeX[i] = snakeX[i-1];
+    snakeY[i] = snakeY[i-1];
   }
   //update head
+  //  snakeX[0] = controlPos[0];
+  // snakeY[0] = controlPos[1];
+  
   controlPos[0] += colVelocity;
   controlPos[1] += rowVelocity;
 
@@ -45,7 +47,7 @@ void move_snake(){
   if(controlPos[1] > screenHeight -2) controlPos[1] = screenHeight -2;
 
   snakeX[0] = controlPos[0];
-  snakeY[1] = controlPos[1];
+  snakeY[0] = controlPos[1];
 }
 
 void check_self_collision(){
@@ -56,8 +58,10 @@ void check_self_collision(){
   }
 }
 void draw_snake(){
-  //erase tail
-    fillRectangle(snakeX[snakeLength-1], snakeY[snakeLength-1], 5, 5, COLOR_WHITE); //draw head
-    fillRectangle(snakeX[0], snakeY[0],5,5, COLOR_BLACK);
-    
+  //erase old tail
+    fillRectangle(snakeX[snakeLength-1], snakeY[snakeLength-1], 5, 5, COLOR_BLACK); 
+    //draw new head
+    for(int i = 0; i < snakeLength; i++){
+      fillRectangle(snakeX[0], snakeY[0],5,5, COLOR_GREEN);
+    }
 }

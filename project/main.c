@@ -22,6 +22,8 @@ extern char switches;
 
 extern int redrawScreen;
 extern char gameover;
+extern short foodX, foodY;
+extern char foodExists;
 
 void switch_init();
 void switch_interrupt_handler();
@@ -31,42 +33,58 @@ void wdt_c_handler();
 //control mechanics
 void wdt_c_handler(){
   static int moveCounter = 0;
-
   moveCounter++;
-  if (moveCounter < 5) {
-    return;
-  }
-  moveCounter =0;
-  if (gameover) {
-    return; // If game is over, stop moving
-  }
 
-  if (switches & SW1) { // left
+  if(moveCounter <15) return;
+  moveCounter = 0;
+  
+  if(gameover) return;
+ 
+  
+
+  if (switches & SW1 && colVelocity != 1) { // left
     colVelocity = -1;
     rowVelocity = 0;
   }
-  if (switches & SW2) { // down
+  if (switches & SW2 && rowVelocity != -1) { // down
     colVelocity = 0;
     rowVelocity = 1;
   }
-  if (switches & SW4) { // right
+  if (switches & SW4 && colVelocity !=-1) { // right
     colVelocity = 1;
     rowVelocity = 0;
   }
-  if (switches & SW3) { // up
+  if (switches & SW3 && rowVelocity != 1) { // up
     colVelocity = 0;
     rowVelocity = -1;
   }
-
+  
+  /*move head
   controlPos[0] += colVelocity;
   controlPos[1] += rowVelocity;
-
+  */
+  move_snake();
   // Keep snake inside bounds
   if (controlPos[0] < 1) controlPos[0] = 1;
   if (controlPos[0] > screenWidth - 2) controlPos[0] = screenWidth - 2;
   if (controlPos[1] < 1) controlPos[1] = 1;
   if (controlPos[1] > screenHeight - 2) controlPos[1] = screenHeight - 2;
 
+  //check food collision
+  if(!gameover && foodExists &&
+     controlPos[0] >= foodX - 2 && controlPos[0] <= foodX-2 &&
+     controlPos[1] >= foodY - 2 && controlPos[1] <= foodY +2){
+
+    snakeLength += 5;
+    foodExists=0;
+
+    for(int i = snakeLength -5; i < snakeLength; i++){
+      snakeX[i] = snakeX[i-1];
+      snakeY[i] = snakeY[i-1];
+    }
+  }
+  
+  //set redraw flag
   redrawScreen = 1;
 }
 
