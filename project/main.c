@@ -38,8 +38,10 @@ void wdt_c_handler(){
   if(moveCounter <15) return;
   moveCounter = 0;
   
-  if(gameover) return;
- 
+  if(gameover){
+    redrawScreen = 1;
+    return;
+  }
   
 
   if (switches & SW1 && colVelocity != 1) { // left

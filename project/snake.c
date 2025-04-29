@@ -5,7 +5,7 @@
 
 //snake body
 short snakeX[100], snakeY[100];
-short snakeLength = 5;
+short snakeLength = 2;
 
 //snake head
 short controlPos[2] = {20,20};
@@ -62,6 +62,6 @@ void draw_snake(){
     fillRectangle(snakeX[snakeLength-1], snakeY[snakeLength-1], 5, 5, COLOR_BLACK); 
     //draw new head
     for(int i = 0; i < snakeLength; i++){
-      fillRectangle(snakeX[0], snakeY[0],5,5, COLOR_GREEN);
+      fillRectangle(snakeX[i], snakeY[i],5,5, COLOR_GREEN);
     }
 }
