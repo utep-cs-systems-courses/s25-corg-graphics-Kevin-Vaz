@@ -7,16 +7,13 @@ LDFLAGS		= -L../lib -L/opt/ti/msp430_gcc/include/
 CC              = msp430-elf-gcc
 AS              = msp430-elf-gcc -mmcu=${CPU} -c
 
-#source files
-COMMON_OBJECTS = main.o snake.o game.o buzzer.o led.o assembly_helper.o
-
-all:snake.elf
+all:wakedemo.elf
 
 #additional rules for files
-snake.elf: ${COMMON_OBJECTS} 
+wakedemo.elf: ${COMMON_OBJECTS} wakedemo.o wdt_handler.o
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ $^ -lTimer -lLcd 
 
-load: snake.elf
+load: wakedemo.elf
 	msp430loader.sh $^
 
 clean:
