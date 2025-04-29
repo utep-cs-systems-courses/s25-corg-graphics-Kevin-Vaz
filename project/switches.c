@@ -1,11 +1,7 @@
 #include <msp430.h>
-
 #include "switches.h"
 
-
-
 char switches = 0;
-
 
 // update interrupt sense for edge detection
 static char switch_update_interrupt_sense() {

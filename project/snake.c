@@ -29,36 +29,23 @@ void snake_init(){
 
 //Update snake body and head
 void move_snake(){
-  int prevX = snakeX[0];
-  int prevY = snakeY[0];
-  int prev2X, prev2Y;
-  snakeX[0] = controlPos[0];
-  snakeY[0] = controlPos[1];
 
-  //move each tail section
-  for(int i = 1; i <snakeLength; i++){
-    prev2X = snakeX[i];
-    prev2Y = snakeY[i];
-    snakeX[i] = prevX;
-    snakeY[i] = prevY;
-    prevX = prev2X;
-    prevY = prev2Y;
+  for(int i = snakeLength -1; i> 0; i--){
+    snakeX[0] = snakeX[i-1];
+    snakeY[0] = snakeY[i-1];
   }
-
+  //update head
   controlPos[0] += colVelocity;
   controlPos[1] += rowVelocity;
 
   //keep snake inside the limits
   if(controlPos[0] < 1) controlPos[0] = 1;
-  if(controlPos[0] > screenWidth -1) controlPos[0] = screenWidth-1;
+  if(controlPos[0] > screenWidth -2) controlPos[0] = screenWidth-2;
   if(controlPos[1] < 1) controlPos[1] = 1;
-  if(controlPos[1] > screenHeight -1) controlPos[1] = screenHeight -1;
+  if(controlPos[1] > screenHeight -2) controlPos[1] = screenHeight -2;
 
-  //check if food was eaten
-  if(controlPos[0] >= foodX-2 && controlPos[0] <= foodX + 2 &&
-     controlPos[1] >= foodY-2 && controlPos[1] <= foodY + 2) {
-    snakeLength = grow_snake(snakeLength);
-    foodExists = 0;
+  snakeX[0] = controlPos[0];
+  snakeY[1] = controlPos[1];
 }
 
 void check_self_collision(){
@@ -68,10 +55,9 @@ void check_self_collision(){
     }
   }
 }
-}
 void draw_snake(){
-  for(int i = 0; i < snakeLength; i++){
-    fillRectangle(snakeX[0], snakeY[0], 5, 5, COLOR_WHITE); //draw head
-  }
-  fillRectangle(snakeX[snakeLength-1], snakeY[snakeLength-1],5,5, COLOR_BLACK);
+  //erase tail
+    fillRectangle(snakeX[snakeLength-1], snakeY[snakeLength-1], 5, 5, COLOR_WHITE); //draw head
+    fillRectangle(snakeX[0], snakeY[0],5,5, COLOR_BLACK);
+    
 }

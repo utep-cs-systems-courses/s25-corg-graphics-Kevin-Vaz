@@ -15,5 +15,7 @@ void update_shape();
 
 //allow other files to modify redraw flag
 extern int redrawScreen;
+extern char gameover;
+
 
 #endif

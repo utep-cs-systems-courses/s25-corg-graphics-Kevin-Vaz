@@ -3,9 +3,9 @@
 #include "led.h"
 #include "snake.h"
 #include "game.h"
-#include "../h/lcdutils.h"
-#include "../h/lcddraw.h"
-#include "../timerLib/libTimer.h"
+#include "lcdutils.h"
+#include "lcddraw.h"
+#include "libTimer.h"
 
 // WARNING: LCD DISPLAY USES P1.0.  Do not touch!!!
 
@@ -18,8 +18,8 @@
 #define SWITCHES 15
 
 extern unsigned int grow_snake(unsigned int length);
+extern char switches;
 
-int switches = 0;
 extern int redrawScreen;
 extern char gameover;
 
@@ -28,74 +28,53 @@ void switch_interrupt_handler();
 static char switch_update_interrupt_sense();
 void wdt_c_handler();
 
-
-static char switch_update_interrupt_sense(){
-  char p2val = P2IN;
-  P2IES |= (p2val & SWITCHES);
-  P2IES &= (p2val | ~SWITCHES);
-  return p2val;
-}
-
-void switch_init(){
-  P2REN |= SWITCHES;
-  P2IE |= SWITCHES;
-  P2OUT |= SWITCHES;
-  P2DIR &= ~SWITCHES;
-  switch_update_interrupt_sense();
-}
-
-
-void switch_interrupt_handler(){
-  char p2val = switch_update_interrupt_sense();
-  switches = ~p2val & SWITCHES;
-}
-
-
-
-
 //control mechanics
 void wdt_c_handler(){
-  static int moveCounter =0;
+  static int moveCounter = 0;
 
-  
   moveCounter++;
-  if(moveCounter<5){
+  if (moveCounter < 5) {
     return;
   }
   moveCounter =0;
-
-  if(gameover){
-    if(switches & SW2){
-      snake_init();
-      game_init();
-      led_init();
-      buzzer_set_period(0);
-    }
-    return;
+  if (gameover) {
+    return; // If game is over, stop moving
   }
-  
-  if(switches & SW1){ //left
+
+  if (switches & SW1) { // left
     colVelocity = -1;
     rowVelocity = 0;
   }
-  if(switches & SW2){ //down
+  if (switches & SW2) { // down
     colVelocity = 0;
-    rowVelocity =1;
+    rowVelocity = 1;
   }
-  if (switches & SW4){ //right
-    colVelocity =1;
+  if (switches & SW4) { // right
+    colVelocity = 1;
     rowVelocity = 0;
   }
-  if(switches & SW3){ //up
-    colVelocity =0;
+  if (switches & SW3) { // up
+    colVelocity = 0;
     rowVelocity = -1;
   }
+
+  controlPos[0] += colVelocity;
+  controlPos[1] += rowVelocity;
+
+  // Keep snake inside bounds
+  if (controlPos[0] < 1) controlPos[0] = 1;
+  if (controlPos[0] > screenWidth - 2) controlPos[0] = screenWidth - 2;
+  if (controlPos[1] < 1) controlPos[1] = 1;
+  if (controlPos[1] > screenHeight - 2) controlPos[1] = screenHeight - 2;
+
+  redrawScreen = 1;
 }
 
 int main(){
   
   configureClocks();
   lcd_init();
+  clearScreen(COLOR_BLACK);
   switch_init();
   led_init();
   buzzer_init();
@@ -103,9 +82,8 @@ int main(){
   game_init();
 
   enableWDTInterrupts();
- or_sr(0x8);
+  or_sr(0x8);
 
- clearScreen(COLOR_BLACK);
  while(1){
    if(redrawScreen) {
     redrawScreen = 0;
@@ -120,7 +98,7 @@ int main(){
 
 void __interrupt_vec(PORT2_VECTOR) Port_2(){
   if(P2IFG & SWITCHES){
-    P2IFG &= ~SWITCHES;
-    switch_interrupt_handler();
+  P2IFG &= ~SWITCHES;
+  switch_interrupt_handler();
   }
 }

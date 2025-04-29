@@ -43,15 +43,18 @@ void update_shape(){
     move_snake();
     check_self_collision();
 
+    //clearScreen(COLOR_BLACK);
+    // fillRectangle(30,30,10,10, COLOR_WHITE);
+    
     if(!foodExists){
       foodX = (foodX + 37) % screenWidth;
       foodY = (foodY + 61) % screenHeight;
       if(foodX < 5) foodX += 5;
       if(foodY < 5) foodY += 5;
       foodExists =1;
-
+    }
+    clearScreen(COLOR_BLACK);
     draw_snake();
     draw_food();
-    }
   }
 }
