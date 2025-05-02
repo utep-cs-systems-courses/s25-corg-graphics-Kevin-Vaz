@@ -77,7 +77,7 @@ void wdt_c_handler(){
 
   //check food collision
   if(!gameover && foodExists &&
-     controlPos[0] >= foodX - 2 && controlPos[0] <= foodX-2 &&
+     controlPos[0] >= foodX - 2 && controlPos[0] <= foodX +2 &&
      controlPos[1] >= foodY - 2 && controlPos[1] <= foodY +2){
 
     snakeLength += 5;
@@ -133,9 +133,10 @@ int main(){
    if(redrawScreen) {
     redrawScreen = 0;
     update_shape();
+    or_sr(0x10);
     }
   P1OUT &= ~BIT6;
-  or_sr(0x10);
+  //  or_sr(0x10);
   P1OUT |= BIT6;
  }
  return 0;
