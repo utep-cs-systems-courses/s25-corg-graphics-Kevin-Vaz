@@ -4,8 +4,7 @@
 #include "led.h"
 #include "lcdutils.h"
 #include "lcddraw.h"
-#include "lcddraw.h"
-#include "lcdutils.h"
+
 
 
 short foodX, foodY;
@@ -17,6 +16,8 @@ int redrawScreen =1;
 //game over flag
 char gameover =0;
 char clear =0;
+char show =0;
+
 extern char growing;
 extern unsigned int grow_snake(unsigned int length);
 
@@ -32,7 +33,11 @@ void game_init(){
 //handle game over
 void game_over(){
   gameover = 1;
-  //  clearScreen(COLOR_RED);
+  clearScreen(COLOR_RED);
+
+  drawString5x7(25, 60, "GAME OVER", COLOR_WHITE, COLOR_BLUE);
+  drawString5x7(10, 80, "PRESS any key", COLOR_BLUE, COLOR_GREEN);
+  
   P1OUT |= LED_GREEN;
   buzzer_set_period(100);
   redrawScreen =0;
@@ -48,26 +53,16 @@ void draw_food(){
 //REDRAW SNAKE
 void update_shape(){
   if(gameover){
-    static char show = 0;
-    if(!show) {
-       clearScreen(COLOR_RED);
-       drawString5x7(25, 60, "GAME OVER", COLOR_WHITE, COLOR_BLACK);
-       drawString5x7(10, 80, "Press any key", COLOR_WHITE, COLOR_BLUE);
-       show=1;
-	 }
-    return;
+     return;
   }
-  
-   if(!clear){
+ 
     clearScreen(COLOR_BLACK);
-    clear =1;
-  }
-  
+   
     move_snake();
     check_self_collision();
 
     
-    if(!gameover && foodExists &&
+    if(foodExists &&
        controlPos[0] >= foodX -4 && controlPos[0] <= foodX + 4 &&
        controlPos[1] >= foodY -4 && controlPos[1] <= foodY + 4) {
       fillRectangle(foodX-2, foodY -2, 5, 5, COLOR_BLACK);
@@ -91,9 +86,7 @@ void update_shape(){
 void restart_game(){
   game_init();
   snake_init();
-  clear = 0;
+  clearScreen(COLOR_BLACK);
+  
   redrawScreen =1;
-
-  extern char show;
-  show = 0;
 }
