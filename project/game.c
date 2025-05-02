@@ -4,6 +4,9 @@
 #include "led.h"
 #include "lcdutils.h"
 #include "lcddraw.h"
+#include "lcddraw.h"
+#include "lcdutils.h"
+
 
 short foodX, foodY;
 char foodExists = 1;
@@ -29,7 +32,7 @@ void game_init(){
 //handle game over
 void game_over(){
   gameover = 1;
-  clearScreen(COLOR_RED);
+  //  clearScreen(COLOR_RED);
   P1OUT |= LED_GREEN;
   buzzer_set_period(100);
   redrawScreen =0;
@@ -45,11 +48,19 @@ void draw_food(){
 //REDRAW SNAKE
 void update_shape(){
   if(gameover){
-    clearScreen(COLOR_RED);
+    static char show = 0;
+    if(!show) {
+       clearScreen(COLOR_RED);
+       drawString5x7(25, 60, "GAME OVER", COLOR_WHITE, COLOR_BLACK);
+       drawString5x7(10, 80, "Press any key", COLOR_WHITE, COLOR_BLUE);
+       show=1;
+	 }
+    return;
   }
+  
    if(!clear){
     clearScreen(COLOR_BLACK);
-    clear =0;
+    clear =1;
   }
   
     move_snake();
@@ -82,4 +93,7 @@ void restart_game(){
   snake_init();
   clear = 0;
   redrawScreen =1;
+
+  extern char show;
+  show = 0;
 }

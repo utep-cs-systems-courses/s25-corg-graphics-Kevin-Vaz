@@ -6,6 +6,8 @@
 #include "lcdutils.h"
 #include "lcddraw.h"
 #include "libTimer.h"
+#include "lcddraw.h"
+#include "lcdutils.h"
 
 // WARNING: LCD DISPLAY USES P1.0.  Do not touch!!!
 
@@ -118,7 +120,7 @@ int main(){
   
   configureClocks();
   lcd_init();
-  clearScreen(COLOR_BLACK);
+  //  clearScreen(COLOR_BLACK);
   switch_init();
   led_init();
   buzzer_init();
@@ -126,6 +128,7 @@ int main(){
   game_init();
 
   enableWDTInterrupts();
+  drawString5x7(20,30, "Test OK", COLOR_WHITE, COLOR_BLUE);
   or_sr(0x8);
 
  while(1){
@@ -133,10 +136,10 @@ int main(){
    if(redrawScreen) {
     redrawScreen = 0;
     update_shape();
-    or_sr(0x10);
+    //   or_sr(0x10);
     }
   P1OUT &= ~BIT6;
-  //  or_sr(0x10);
+  or_sr(0x10);
   P1OUT |= BIT6;
  }
  return 0;
