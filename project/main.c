@@ -34,10 +34,13 @@ void restart_game();
 //control mechanics
 void wdt_c_handler(){
   static int moveCounter = 0;
-  moveCounter++;
 
-  if(moveCounter <15) return;
-  moveCounter = 0;
+  //moveCounter++;
+  if(!gameover){
+    moveCounter++;
+    if(moveCounter <15) return;
+    moveCounter = 0;
+  }
   
   if(gameover){
     if(switches){
@@ -66,8 +69,6 @@ void wdt_c_handler(){
   }
   
 
-  move_snake();
-
   // Keep snake inside bounds
   if (controlPos[0] < 1) controlPos[0] = 1;
   if (controlPos[0] > screenWidth - 2) controlPos[0] = screenWidth - 2;
@@ -90,10 +91,23 @@ void wdt_c_handler(){
 
   P1OUT &= ~(LED_RED | LED_GREEN);
 
-  if(switches & SW1) P1OUT |= LED_RED;
+  if(switches & SW1) P1OUT |= LED_GREEN;
   if(switches & SW2) P1OUT |= LED_GREEN;
-  if(switches & SW3) P1OUT |= LED_RED;
+  if(switches & SW3) P1OUT |= LED_GREEN;
   if(switches & SW4) P1OUT |= LED_GREEN;
+
+  //buzzer sound on each button
+  if(switches & SW1){
+    buzzer_set_period(1000);
+  } else if (switches & SW2){
+    buzzer_set_period(2000);
+  } else if (switches & SW3){
+    buzzer_set_period(700);
+  } else if (switches & SW4){
+    buzzer_set_period(500);
+  } else {
+    buzzer_set_period(0);
+  }
 
   
   //set redraw flag
@@ -115,10 +129,11 @@ int main(){
   or_sr(0x8);
 
  while(1){
+   //   update_shape();
    if(redrawScreen) {
     redrawScreen = 0;
     update_shape();
-  }
+    }
   P1OUT &= ~BIT6;
   or_sr(0x10);
   P1OUT |= BIT6;

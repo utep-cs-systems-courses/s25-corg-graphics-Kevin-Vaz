@@ -27,10 +27,11 @@ void game_init(){
 
 //handle game over
 void game_over(){
-  gameover =1;
+  gameover = 1;
   P1OUT |= LED_GREEN;
-  buzzer_set_period(800);
+  buzzer_set_period(100);
   redrawScreen =1;
+  
 }
 
 void draw_food(){
@@ -41,19 +42,22 @@ void draw_food(){
 
 //REDRAW SNAKE
 void update_shape(){
-  if(gameover){
-    clearScreen(COLOR_RED);
-    return;
-  }
+  if(!gameover){
+    
+     /*
+      clearScreen(COLOR_RED);
+     return;
+     } */
   
     move_snake();
     check_self_collision();
 
-    if(foodExists &&
+    
+    if(!gameover && foodExists &&
        controlPos[0] >= foodX -4 && controlPos[0] <= foodX + 4 &&
        controlPos[1] >= foodY -4 && controlPos[1] <= foodY + 4) {
       fillRectangle(foodX-2, foodY -2, 5, 5, COLOR_BLACK);
-      snakeLength += 7;
+      snakeLength = grow_snake(snakeLength);
       growing =1;
       foodExists =0;
     }
@@ -68,6 +72,9 @@ void update_shape(){
     }
   draw_snake();
   draw_food();
+  } else if(gameover){
+    clearScreen(COLOR_RED);
+  }
 }
 
 void restart_game(){
