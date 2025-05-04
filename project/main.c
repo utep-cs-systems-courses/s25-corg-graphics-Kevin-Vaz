@@ -48,7 +48,6 @@ void wdt_c_handler(){
     if(switches){
       restart_game();
     }
-    redrawScreen = 1;
     return;
   }
   
@@ -110,17 +109,16 @@ void wdt_c_handler(){
   } else {
     buzzer_set_period(0);
   }
-
   
   //set redraw flag
-  redrawScreen = 1;
+   redrawScreen = 1;
 }
 
 int main(){
   
   configureClocks();
   lcd_init();
-  //  clearScreen(COLOR_BLACK);
+  clearScreen(COLOR_BLACK);
   switch_init();
   led_init();
   buzzer_init();
@@ -128,15 +126,12 @@ int main(){
   game_init();
 
   enableWDTInterrupts();
-  drawString5x7(20,30, "Test OK", COLOR_WHITE, COLOR_BLUE);
   or_sr(0x8);
 
  while(1){
-   //   update_shape();
    if(redrawScreen) {
     redrawScreen = 0;
     update_shape();
-    //   or_sr(0x10);
     }
   P1OUT &= ~BIT6;
   or_sr(0x10);
